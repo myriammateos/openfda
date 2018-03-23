@@ -15,3 +15,4 @@ for i in range(len(output['results'])):
         print(fabricante)
     except KeyError:
         print("No especificado")
+        
