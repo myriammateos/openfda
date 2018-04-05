@@ -1,7 +1,7 @@
 import json
-import urllib
+import urllib.request
 
-data = urllib.urlopen("https://api.fda.gov/drug/label.json").read()
+data = urllib.request.urlopen("https://api.fda.gov/drug/label.json").read().decode("utf-8")
 output = json.loads(data)
 
 identificador = output['results'][0]['id']
