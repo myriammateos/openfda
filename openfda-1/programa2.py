@@ -1,13 +1,12 @@
 import json
-import urllib
+import urllib.request
 
 num_drug = 10
 
-data = urllib.urlopen("https://api.fda.gov/drug/label.json?limit={}".format(num_drug)).read()
+data = urllib.request.urlopen("https://api.fda.gov/drug/label.json?limit={}".format(num_drug)).read().decode("utf-8")
 output = json.loads(data)
 
 for i in range(num_drug):
     identificador = output['results'][i]['id']
-    #nombre_medicamento = output['results'][i]['openfda']['generic_name'][0] No todos lo tienen
     print ("El identificador del medicamento {} es: {}".format(i, identificador))
 
