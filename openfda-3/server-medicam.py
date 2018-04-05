@@ -4,8 +4,10 @@ import json
 import urllib.request
 
 # -- Puerto donde lanzar el servidor
-PORT = 8001
+PORT = 8000
 IP = ""
+num_drug = 10
+url = "https://api.fda.gov/drug/label.json?limit={}".format(num_drug)
 
 class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
@@ -22,14 +24,13 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         # el recurso solicitado
         message = """<!doctype html>
                 <html>
-                  <body style='background-image: url()
+                  <body style='background-color:#66ffff'>
                     <h1>LISTA DE MEDICAMENTOS</h2>"""
 
-        num_drug = 10
-        data = urllib.request.urlopen("https://api.fda.gov/drug/label.json?limit={}".format(num_drug)).read().decode("utf-8")
+        data = urllib.request.urlopen(url).read().decode("utf-8")
         output = json.loads(data)
 
-        message +=  """</p><table style="width:auto" class="width:egt" border="2">
+        message += """</p><table style="width:auto" class="width:egt" border="2">
                       <tr>
                         <th>Medicamento</th>
                         <th>Identificador</th>
@@ -51,11 +52,11 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             try:
                 proposito = output['results'][i]['purpose'][0]
             except KeyError:
-                proposito= "No especificado"
+                proposito = "No especificado"
             try:
                 active = output['results'][i]['active_ingredient'][0]
             except KeyError:
-                active= "No especificado"
+                active = "No especificado"
 
             message += "<tr>"
             message += "<td>{}</th>".format(name)
