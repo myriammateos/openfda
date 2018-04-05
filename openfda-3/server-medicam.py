@@ -1,23 +1,20 @@
 import http.server
 import socketserver
-import os
 import json
+import urllib.request
 
 # -- Puerto donde lanzar el servidor
-PORT = 8002
+PORT = 8001
 IP = ""
 
 class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
     def do_GET(self):
 
-        # La primera linea del mensaje de respuesta es el
-        # status. Indicamos que OK
+        # Status
         self.send_response(200)
 
-        # En las siguientes lineas de la respuesta colocamos las
-        # cabeceras necesarias para que el cliente entienda el
-        # contenido que le enviamos (que sera HTML)
+        # Que contenido estamos pasando
         self.send_header('Content-type', 'text/html')
         self.end_headers()
 
@@ -25,11 +22,51 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         # el recurso solicitado
         message = """<!doctype html>
                 <html>
-                  <body style='background-color: #7cdcbe'>
+                  <body style='background-image: url()
                     <h1>LISTA DE MEDICAMENTOS</h2>"""
 
-        solicitud = self.path[1:]
+        num_drug = 10
+        data = urllib.request.urlopen("https://api.fda.gov/drug/label.json?limit={}".format(num_drug)).read().decode("utf-8")
+        output = json.loads(data)
 
+        message +=  """</p><table style="width:auto" class="width:egt" border="2">
+                      <tr>
+                        <th>Medicamento</th>
+                        <th>Identificador</th>
+                        <th>Fabricante</th>
+                        <th>Proposito</th>
+                        <th>Principio activo</th>
+                      </tr>"""
+
+        for i in range(num_drug):
+            try:
+                name = output['results'][i]['openfda']['substance_name'][0]
+            except KeyError:
+                name = "No especificado"
+            identificador = output['results'][i]['id']
+            try:
+                fabricante = output['results'][i]['openfda']['manufacturer_name'][0]
+            except KeyError:
+                fabricante = "No especificado"
+            try:
+                proposito = output['results'][i]['purpose'][0]
+            except KeyError:
+                proposito= "No especificado"
+            try:
+                active = output['results'][i]['active_ingredient'][0]
+            except KeyError:
+                active= "No especificado"
+
+            message += "<tr>"
+            message += "<td>{}</th>".format(name)
+            message += "<td>{}</th>".format(identificador)
+            message += "<td>{}</th>".format(fabricante)
+            message += "<td>{}</th>".format(proposito)
+            message += "<td>{}</th>".format(active)
+            message += "</tr>"
+
+        message += """</tr></tbody></table>
+                    </body></html>"""
 
         # Enviar el mensaaje completo
         self.wfile.write(bytes(message, "utf8"))
@@ -59,4 +96,4 @@ except KeyboardInterrupt:
 
 print("")
 print("Servidor parado")
-httpd.close()
+httpd.server_close()
