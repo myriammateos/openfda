@@ -5,16 +5,12 @@ import http.client
 import urllib.request
 
 #Info
-
 web = "api.fda.gov"
 resource = "/drug/label.json"
 headers = {'User-Agent': 'http-client'}
-
-
 PORT = 8000
 IP = "" #Por defecto coge la IP local 127.0.0.1
 num_drug = 10
-url = "https://api.fda.gov/drug/label.json?limit={}".format(num_drug)
 extra = '?limit={}'.format(num_drug)
 
 class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
