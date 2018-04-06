@@ -1,7 +1,7 @@
 import http.client
 import json
 
-web = "api.fda.gov"  # -- Nombre del servidor REST
+web = "api.fda.gov"
 resource = "/drug/label.json"
 headers = {'User-Agent': 'http-client'}
 num_drug = 100

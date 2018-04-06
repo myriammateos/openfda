@@ -5,7 +5,7 @@ import urllib.request
 
 # -- Puerto donde lanzar el servidor
 PORT = 8000
-IP = ""
+IP = "" #Por defecto coge la IP local 127.0.0.1
 num_drug = 10
 url = "https://api.fda.gov/drug/label.json?limit={}".format(num_drug)
 
@@ -20,8 +20,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         self.send_header('Content-type', 'text/html')
         self.end_headers()
 
-        # Este es el mensaje que enviamos al cliente: un texto y
-        # el recurso solicitado
+        # Este es el mensaje que enviamos al cliente: un texto y el recurso solicitado
         message = """<!doctype html>
                 <html>
                   <body style='background-color:#1C1C1C'>
@@ -68,6 +67,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 # ----------------------------------
 # El servidor comienza a aqui
 # ----------------------------------
+
 # Establecemos como manejador nuestra propia clase
 Handler = testHTTPRequestHandler
 
