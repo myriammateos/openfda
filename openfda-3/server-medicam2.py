@@ -43,8 +43,6 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     <font color="white">
                     <h1>LISTA DE MEDICAMENTOS</h2>"""
 
-
-
         message += """</p><table style="width:auto" class="width:egt" border="2">
                       <tr>
                         <th>Medicamento</th>
@@ -86,7 +84,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 # Establecemos como manejador nuestra propia clase
 Handler = testHTTPRequestHandler
 
-# -- Configurar el socket del servidor, para esperar conexiones de clientes
+# Configurar el socket del servidor, para esperar conexiones de clientes
 httpd = socketserver.TCPServer(("", PORT), Handler)
 print("Serving at port", PORT)
 
