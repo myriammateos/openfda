@@ -7,10 +7,23 @@ import http.client
 web = "api.fda.gov"
 resource = "/drug/label.json"
 headers = {'User-Agent': 'http-client'}
-PORT = 8000
+PORT = 8001
 IP = ""  #Por defecto coge la IP local 127.0.0.1
 num_drug = 10
 extra = '?limit={}'.format(num_drug)
+url = web + resource + extra
+
+conexion = http.client.HTTPSConnection(web)
+conexion.request("GET", resource + extra, None, headers)
+response = conexion.getresponse()
+if response.status != 200:
+    print("Error de conexión, la URL {} no existe".format(url))
+    exit(1)
+
+data = response.read().decode("utf-8")
+conexion.close()
+
+output = json.loads(data)
 
 class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
@@ -30,14 +43,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     <font color="white">
                     <h1>LISTA DE MEDICAMENTOS</h2>"""
 
-        conexion = http.client.HTTPSConnection(web)
-        conexion.request("GET", resource + extra, None, headers)
-        response = conexion.getresponse()
 
-        data = response.read().decode("utf-8")
-        conexion.close()
-
-        output = json.loads(data)
 
         message += """</p><table style="width:auto" class="width:egt" border="2">
                       <tr>

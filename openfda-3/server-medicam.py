@@ -4,10 +4,21 @@ import json
 import urllib.request
 
 # -- Puerto donde lanzar el servidor
-PORT = 8001
+PORT = 8002
 IP = ""   #Por defecto coge la IP local 127.0.0.1
 num_drug = 10
 url = "https://api.fda.gov/drug/label.json?limit={}".format(num_drug)
+
+try:
+    data = urllib.request.urlopen(url).read().decode("utf-8")
+    output = json.loads(data)
+except urllib.error.URLError as error:
+    if error.code == 404:
+        print("Error 404, page not found")
+    else:
+        print("Another error occurred")
+    print("La URL {} es erronea".format(url))
+    exit(1)
 
 class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
@@ -26,9 +37,6 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                   <body style='background-color:#1C1C1C'>
                     <font color="white">
                     <h1>LISTA DE MEDICAMENTOS</h2>"""
-
-        data = urllib.request.urlopen(url).read().decode("utf-8")
-        output = json.loads(data)
 
         message += """</p><table style="width:auto" class="width:egt" border="2">
                       <tr>
