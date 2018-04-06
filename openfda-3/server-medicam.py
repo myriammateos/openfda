@@ -24,7 +24,8 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         # el recurso solicitado
         message = """<!doctype html>
                 <html>
-                  <body style='background-color:#66ffff'>
+                  <body style='background-color:#1C1C1C'>
+                    <font color="white">
                     <h1>LISTA DE MEDICAMENTOS</h2>"""
 
         data = urllib.request.urlopen(url).read().decode("utf-8")
@@ -34,8 +35,6 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                       <tr>
                         <th>Medicamento</th>
                         <th>Identificador</th>
-                        <th>Fabricante</th>
-                        <th>Proposito</th>
                         <th>Principio activo</th>
                       </tr>"""
 
@@ -45,10 +44,6 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             except KeyError:
                 name = "No especificado"
             identificador = output['results'][i]['id']
-            try:
-                fabricante = output['results'][i]['openfda']['manufacturer_name'][0]
-            except KeyError:
-                fabricante = "No especificado"
             try:
                 proposito = output['results'][i]['purpose'][0]
             except KeyError:
@@ -61,12 +56,11 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             message += "<tr>"
             message += "<td>{}</th>".format(name)
             message += "<td>{}</th>".format(identificador)
-            message += "<td>{}</th>".format(fabricante)
-            message += "<td>{}</th>".format(proposito)
             message += "<td>{}</th>".format(active)
             message += "</tr>"
 
         message += """</tr></tbody></table>
+                    </font>
                     </body></html>"""
 
         # Enviar el mensaaje completo
