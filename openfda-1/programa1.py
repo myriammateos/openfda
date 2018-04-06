@@ -1,7 +1,7 @@
 import json
 import urllib.request
 
-url = "https://api.fda.gov/ddrug/label.json"
+url = "https://api.fda.gov/drug/label.json"
 
 try:
     data = urllib.request.urlopen(url).read().decode("utf-8")
