@@ -45,10 +45,6 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                 name = "No especificado"
             identificador = output['results'][i]['id']
             try:
-                proposito = output['results'][i]['purpose'][0]
-            except KeyError:
-                proposito = "No especificado"
-            try:
                 active = output['results'][i]['active_ingredient'][0]
             except KeyError:
                 active = "No especificado"
