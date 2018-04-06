@@ -4,8 +4,8 @@ import json
 import urllib.request
 
 # -- Puerto donde lanzar el servidor
-PORT = 8000
-IP = "" #Por defecto coge la IP local 127.0.0.1
+PORT = 8001
+IP = ""   #Por defecto coge la IP local 127.0.0.1
 num_drug = 10
 url = "https://api.fda.gov/drug/label.json?limit={}".format(num_drug)
 
@@ -38,14 +38,14 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                       </tr>"""
 
         for i in range(num_drug):
-            try:
+            if 'substance_name' in output['results'][i]['openfda'].keys():
                 name = output['results'][i]['openfda']['substance_name'][0]
-            except KeyError:
+            else:
                 name = "No especificado"
             identificador = output['results'][i]['id']
-            try:
+            if 'active_ingredient' in output['results'][i].keys():
                 active = output['results'][i]['active_ingredient'][0]
-            except KeyError:
+            else:
                 active = "No especificado"
 
             message += "<tr>"
