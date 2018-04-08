@@ -72,7 +72,6 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         print("File served!")
         return
 
-
 # ----------------------------------
 # El servidor comienza a aqui
 # ----------------------------------

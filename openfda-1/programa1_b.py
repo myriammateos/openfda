@@ -7,6 +7,7 @@ headers = {'User-Agent': 'http-client'}
 url = web + resource
 
 conexion = http.client.HTTPSConnection(web)
+
 try:
     conexion.request("GET", resource, None, headers)
 except http.client.socket.gaierror as error:

@@ -6,7 +6,7 @@ active = "acetylsalicylic"
 url = 'https://api.fda.gov/drug/label.json?search=active_ingredient:"{}"&limit={}'.format(active, num_drug)
 
 if not 0 < num_drug <= 100:
-    print ("Error, el numero de medicamentos debe estar entre 1 y 100")
+    print("Error, el numero de medicamentos debe estar entre 1 y 100")
     exit(1)
 
 try:
@@ -24,4 +24,3 @@ for i in range(len(output['results'])):
         print("  -" + fabricante)
     else:
         print("  -No especificado")
-

@@ -6,7 +6,7 @@ resource = "/drug/label.json"
 headers = {'User-Agent': 'http-client'}
 num_drug = 100
 active = "acetylsalicylic"
-extra = '?search=active_ingredient:"{}"&limit={}'.format(active,num_drug)
+extra = '?search=active_ingredient:"{}"&limit={}'.format(active, num_drug)
 url = web + resource + extra
 
 if not 0 < num_drug <= 100:
@@ -37,4 +37,3 @@ for i in range(len(output['results'])):
         print("  -" + fabricante)
     else:
         print("  -No especificado")
-
