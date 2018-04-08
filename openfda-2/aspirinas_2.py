@@ -37,5 +37,3 @@ for i in range(len(output['results'])):
         print("  -" + fabricante)
     else:
         print("  -No especificado")
-
-print("")

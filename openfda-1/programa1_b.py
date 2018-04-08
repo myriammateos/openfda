@@ -31,5 +31,3 @@ proposito = output['results'][0]['purpose'][0]
 print("El identificador es: {}".format(identificador))
 print("El proposito es: {}".format(proposito))
 print("El fabricante es: {}".format(fabricante))
-
-print("")
