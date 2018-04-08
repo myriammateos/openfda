@@ -7,10 +7,7 @@ try:
     data = urllib.request.urlopen(url).read().decode("utf-8")
     output = json.loads(data)
 except urllib.error.URLError as error:
-    if error.code == 404:
-        print("Error 404, page not found")
-    else:
-        print("Another error occurred")
+    print(error)
     print("La URL {} es erronea".format(url))
     exit(1)
 

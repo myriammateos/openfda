@@ -4,9 +4,9 @@ import json
 import urllib.request
 
 # -- Puerto donde lanzar el servidor
-PORT = 8002
+PORT = 8001
 IP = ""   #Por defecto coge la IP local 127.0.0.1
-num_drug = 10
+num_drug = 15
 url = "https://api.fda.gov/drug/label.json?limit={}".format(num_drug)
 
 try:
@@ -79,14 +79,13 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 # Establecemos como manejador nuestra propia clase
 Handler = testHTTPRequestHandler
 
-# -- Configurar el socket del servidor, para esperar conexiones de clientes
+# Configurar el socket del servidor, para esperar conexiones de clientes
 httpd = socketserver.TCPServer(("", PORT), Handler)
 print("Serving at port", PORT)
 
 # Entrar en el bucle principal
 # Las peticiones se atienden desde nuestro manejador
-# Cada vez que se ocurra un "GET" se invoca al metodo do_GET de
-# nuestro manejador
+# Cada vez que se ocurra un "GET" se invoca al metodo do_GET de nuestro manejador
 try:
     httpd.serve_forever()
 except KeyboardInterrupt:

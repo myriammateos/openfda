@@ -10,7 +10,11 @@ extra = '?search=active_ingredient:"{}"&limit={}'.format(active,num_drug)
 url = web + resource + extra
 
 conexion = http.client.HTTPSConnection(web)
-conexion.request("GET", resource+extra, None, headers)
+try:
+    conexion.request("GET", resource+extra, None, headers)
+except:
+    print("Error de conexión, la URL {} no existe".format(web))
+    exit(1)
 response = conexion.getresponse()
 if response.status != 200:
     print("Error de conexión, la URL {} no existe".format(url))

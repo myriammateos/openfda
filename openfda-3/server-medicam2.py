@@ -7,7 +7,7 @@ import http.client
 web = "api.fda.gov"
 resource = "/drug/label.json"
 headers = {'User-Agent': 'http-client'}
-PORT = 8001
+PORT = 8000
 IP = ""  #Por defecto coge la IP local 127.0.0.1
 num_drug = 10
 extra = '?limit={}'.format(num_drug)

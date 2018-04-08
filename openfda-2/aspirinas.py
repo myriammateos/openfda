@@ -5,14 +5,15 @@ num_drug = 100
 active = "acetylsalicylic"
 url = 'https://api.fda.gov/drug/label.json?search=active_ingredient:"{}"&limit={}'.format(active, num_drug)
 
+if not 0 < num_drug <= 100:
+    print ("Error, el numero de medicamentos debe estar entre 1 y 100")
+    exit(1)
+
 try:
     data = urllib.request.urlopen(url).read().decode("utf-8")
     output = json.loads(data)
 except urllib.error.URLError as error:
-    if error.code == 404:
-        print("Error 404, page not found")
-    else:
-        print("Another error occurred")
+    print(error)
     print("La URL {} es erronea".format(url))
     exit(1)
 

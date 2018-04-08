@@ -7,10 +7,14 @@ headers = {'User-Agent': 'http-client'}
 url = web + resource
 
 conexion = http.client.HTTPSConnection(web)
-conexion.request("GET", resource, None, headers)
+try:
+    conexion.request("GET", resource, None, headers)
+except:
+    print("Error de conexión, la URL {} no existe".format(web))
+    exit(1)
 response = conexion.getresponse()
 if response.status != 200:
-    print("Error de conexión, la URL {} no existe".format(url))
+    print("Error de conexión, el recurso solicitado {} no existe".format(resource))
     exit(1)
 
 data = response.read().decode("utf-8")
