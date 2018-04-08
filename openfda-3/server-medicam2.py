@@ -3,24 +3,25 @@ import socketserver
 import json
 import http.client
 
-#Info
+# Info
 web = "api.fda.gov"
 resource = "/drug/label.json"
 headers = {'User-Agent': 'http-client'}
 PORT = 8000
-IP = ""  #Por defecto coge la IP local 127.0.0.1
+IP = ""  # Por defecto coge la IP local 127.0.0.1
 num_drug = 10
 extra = '?limit={}'.format(num_drug)
 url = web + resource + extra
 
 if not 0 < num_drug <= 100:
-    print ("Error, el numero de medicamentos debe estar entre 1 y 100")
+    print("Error, el numero de medicamentos debe estar entre 1 y 100")
     exit(1)
 
 conexion = http.client.HTTPSConnection(web)
 try:
     conexion.request("GET", resource + extra, None, headers)
-except:
+except http.client.socket.gaierror as error:
+    print(error)
     print("Error de conexión, la URL {} no existe".format(web))
     exit(1)
 response = conexion.getresponse()

@@ -9,7 +9,8 @@ url = web + resource
 conexion = http.client.HTTPSConnection(web)
 try:
     conexion.request("GET", resource, None, headers)
-except:
+except http.client.socket.gaierror as error:
+    print(error)
     print("Error de conexión, la URL {} no existe".format(web))
     exit(1)
 response = conexion.getresponse()
