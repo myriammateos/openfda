@@ -19,3 +19,5 @@ except urllib.error.URLError as error:
 for i in range(num_drug):
     identificador = output['results'][i]['id']
     print("El identificador del medicamento {} es: {}".format(i+1, identificador))
+
+print("")

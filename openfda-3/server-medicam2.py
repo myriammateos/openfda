@@ -108,3 +108,5 @@ except KeyboardInterrupt:
 print("")
 print("Servidor parado")
 httpd.server_close()
+
+print("")
