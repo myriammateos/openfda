@@ -3,20 +3,21 @@ import socketserver
 import json
 import urllib.request
 
-# -- Puerto donde lanzar el servidor
-PORT = 8001
-IP = ""   #Por defecto coge la IP local 127.0.0.1
-num_drug = 15
+# Puerto donde lanzar el servidor
+PORT = 8000
+IP = ""   # Por defecto coge la IP local 127.0.0.1
+num_drug = 10
 url = "https://api.fda.gov/drug/label.json?limit={}".format(num_drug)
+
+if not 0 < num_drug <= 100:
+    print("Error, el numero de medicamentos debe estar entre 1 y 100")
+    exit(1)
 
 try:
     data = urllib.request.urlopen(url).read().decode("utf-8")
     output = json.loads(data)
 except urllib.error.URLError as error:
-    if error.code == 404:
-        print("Error 404, page not found")
-    else:
-        print("Another error occurred")
+    print(error)
     print("La URL {} es erronea".format(url))
     exit(1)
 

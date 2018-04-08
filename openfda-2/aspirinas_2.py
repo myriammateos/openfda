@@ -9,6 +9,10 @@ active = "acetylsalicylic"
 extra = '?search=active_ingredient:"{}"&limit={}'.format(active,num_drug)
 url = web + resource + extra
 
+if not 0 < num_drug <= 100:
+    print ("Error, el numero de medicamentos debe estar entre 1 y 100")
+    exit(1)
+
 conexion = http.client.HTTPSConnection(web)
 try:
     conexion.request("GET", resource+extra, None, headers)
