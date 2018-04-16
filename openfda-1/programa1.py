@@ -19,3 +19,8 @@ print("El identificador es: {}".format(identificador))
 print("El proposito es: {}".format(proposito))
 print("El fabricante es: {}".format(fabricante))
 
+
+import goslate
+gs = goslate.Goslate()
+text = "Buenos días, ¿qué tal?"
+print(gs.translate(text, 'es'))
