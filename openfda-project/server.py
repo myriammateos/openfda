@@ -2,6 +2,7 @@ import http.server
 import socketserver
 import json
 import http.client
+import os
 
 # Info
 web = "api.fda.gov"
@@ -47,39 +48,17 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         self.end_headers()
 
         # Este es el mensaje que enviamos al cliente: un texto y el recurso solicitado
-        message = """<!doctype html>
-                <html>
-                  <body style='background-color:#545454'>
-                    <font color="white">
-                    <h1>LISTA DE MEDICAMENTOS</h2>"""
 
-        message += """</p><table style="width:auto" class="width:egt" border="2">
-                      <tr>
-                        <th>Medicamento</th>
-                        <th>Identificador</th>
-                        <th>Principio activo</th>
-                      </tr>"""
+        solicitud = self.path[1:]
 
-        for i in range(num_drug):
-            if 'substance_name' in output['results'][i]['openfda'].keys():
-                name = output['results'][i]['openfda']['substance_name'][0]
-            else:
-                name = "No especificado"
-            identificador = output['results'][i]['id']
-            if 'active_ingredient' in output['results'][i].keys():
-                active = output['results'][i]['active_ingredient'][0]
-            else:
-                active = "No especificado"
+        if self.path == "/":
+            file_html = "indice.html"
 
-            message += "<tr>"
-            message += "<td>{}</th>".format(name)
-            message += "<td>{}</th>".format(identificador)
-            message += "<td>{}</th>".format(active)
-            message += "</tr>"
+        with open(file_html, "r") as f:
+            message = f.read()
 
-        message += """</tr></tbody></table>
-                    </font>
-                    </body></html>"""
+
+        #message =
 
         # Enviar el mensaaje completo
         self.wfile.write(bytes(message, "utf8"))
