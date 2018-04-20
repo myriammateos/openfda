@@ -7,13 +7,12 @@ import http.client
 import json
 
 
-def buscadorApi():
+def buscadorApi(url, ing, limit):
     web = "api.fda.gov"
     resource = "/drug/label.json"
     headers = {'User-Agent': 'http-client'}
-    num_drug = 100
-    active = "acetylsalicylic"
-    extra = '?search=active_ingredient:"{}"&limit={}'.format(active, num_drug)
+    extra = url
+    num_drug = limit
 
     if not 0 < num_drug <= 100:
         output = "Error, el numero de medicamentos debe estar entre 1 y 100"
@@ -28,7 +27,7 @@ def buscadorApi():
         exit(1)
     response = conexion.getresponse()
     if response.status != 200:
-        output = "Error de conexión, el recurso solicitado {} no existe".format(resource))
+        output = "Error de conexión, el recurso solicitado {} no existe".format(resource)
         exit(1)
 
     data = response.read().decode("utf-8")
@@ -47,9 +46,10 @@ def getInicio():
 
 @app.route('/searchDrug', methods=['GET'])
 def getDrug():
-    page = request.args.get('active_ingredient', default = "*", type = str)
-    limit = request.args.get('limit', default = "10", type = int)
-    message = buscadorApi()
+    numdrug = 10
+    ingredient = request.args.get('active_ingredient', default = "*", type = str)
+    limit = request.args.get('limit', default = numdrug, type = int)
+    message = buscadorApi("/searchDrug?active_ingredient='{}'".format(ingredient),numdrug)
     return message
 
 @app.route('/searchCompany', methods=['GET'])
@@ -69,4 +69,4 @@ def getListCompanies():
     return message
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000)
+    app.run(host='0.0.0.0', port=8800)
