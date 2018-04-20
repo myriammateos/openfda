@@ -1,6 +1,7 @@
 import http.client
 import json
 
+def buscadorApi()
 web = "api.fda.gov"
 resource = "/drug/label.json"
 headers = {'User-Agent': 'http-client'}

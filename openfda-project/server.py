@@ -4,6 +4,10 @@ import json
 import http.client
 import os
 
+
+from flask import Flask
+app = Flask(__name__)
+
 # Info
 web = "api.fda.gov"
 resource = "/drug/label.json"
@@ -14,11 +18,20 @@ num_drug = 100
 #active = "acetylsalicylic"
 #extra =  '?search=active_ingredient:"{}"&limit={}'.format(active, num_drug)
 #url = web + resource + extra
+
+@app.route('/searchDrug')
+def my_route():
+    page = request.args.get('active_ingredient', default = "*", type = str)
+    filter = request.args.get('filter', default = "*", type = str)
+
+
 socketserver.TCPServer.allow_reuse_address = True
+
 
 if not 0 < num_drug <= 100:
     print("Error, el numero de medicamentos debe estar entre 1 y 100")
     exit(1)
+
 
 class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
@@ -57,30 +70,6 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                 print("Error de conexión, el recurso solicitado {} no existe".format(resource))
                 exit(1)
 
-            data = response.read().decode("utf-8")
-            conexion.close()
-            print(web + resource + extra)
-
-            output = json.loads(data)
-            #message = CrearPaginasHtml(extra).ShowHtml(data, 10)
-
-            message = """<!doctype html>
-                           <html>
-                             <body style='background-color:#545454'>
-                               <font color="white">
-                               <h1>LISTA DE MEDICAMENTOS</h1>
-                               <p>Medicamentos con el principio activo {}:</p>""".format(active)
-
-            for i in range(len(output['results'])):
-                if "generic_name" in output['results'][i]['openfda'].keys():
-                    medicamento = output['results'][i]['openfda']['generic_name'][0]
-
-                else:
-                    medicamento = "No especificado"
-                message += "<ul>{}</ul>".format(medicamento)
-
-            message += """</font>
-                    </body></html>"""
 
         elif self.path [:len("/searchCompany?company=")] == "/searchCompany?company=":
             print("Estoy aquí")
