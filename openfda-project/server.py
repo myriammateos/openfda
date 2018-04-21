@@ -43,10 +43,13 @@ def searchDrug(output, medicament):
             name = "No especificado"
         if "manufacturer_name" in output['results'][i]['openfda'].keys():
             fabricante = output['results'][i]['openfda']['manufacturer_name'][0]
+            url_enlace = 'http://127.0.0.1:8000/searchCompany?company={}'.format(fabricante.replace(" ", "+").replace(",", ""))
+            print(url_enlace)
+            mostrar = '<a href="{}">{}</a>'.format(url_enlace, fabricante)
         else:
-            fabricante = "No especificado"
+            mostrar = "No especificado"
         solucion += "<ul>Medicamento: {}</ul>".format(name)
-        solucion += "<ul>Fabricante: {}</ul>".format(fabricante)
+        solucion += "<ul>Fabricante: {}</ul>".format(mostrar)
     return solucion
 
 def searchCompany(output, company):
