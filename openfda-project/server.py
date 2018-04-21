@@ -1,145 +1,131 @@
-import http.server
-import socketserver
-import json
-import http.client
-import os
-
-
 from flask import Flask
+from flask import request
+import http.client
+import json
+
+
+def buscadorApi(url, limit):
+    web = "api.fda.gov"
+    resource = "/drug/label.json"
+    headers = {'User-Agent': 'http-client'}
+    extra = url
+    num_drug = limit
+    print(url)
+    print(web + resource + url)
+
+    if not 0 < num_drug <= 100:
+        print("Error, el numero de medicamentos debe estar entre 1 y 100")
+        exit(1)
+
+    conexion = http.client.HTTPSConnection(web)
+    try:
+        conexion.request("GET", resource + extra, None, headers)
+    except http.client.socket.gaierror as error:
+        print(error)
+        print("Error de conexión, la URL {} no existe".format(web))
+        exit(1)
+    response = conexion.getresponse()
+    if response.status != 200:
+        print("Error de conexión, el recurso solicitado {} no existe".format(resource+url))
+        exit(1)
+
+    data = response.read().decode("utf-8")
+    conexion.close()
+    output = json.loads(data)
+    return output
+
+def searchDrug(output, medicament):
+    solucion = "<p> Medicamentos que contienen {}: </p>".format(medicament)
+    for i in range(len(output['results'])):
+        if 'substance_name' in output['results'][i]['openfda'].keys():
+            name = output['results'][i]['openfda']['substance_name'][0]
+        else:
+            name = "No especificado"
+        if "manufacturer_name" in output['results'][i]['openfda'].keys():
+            fabricante = output['results'][i]['openfda']['manufacturer_name'][0]
+        else:
+            fabricante = "No especificado"
+        solucion += "<ul>Medicamento: {}</ul>".format(name)
+        solucion += "<ul>Fabricante: {}</ul>".format(fabricante)
+    return solucion
+
+def searchCompany(output, company):
+    solucion = "<p> Medicamentos de la empresa {}: </p>".format(company)
+    for i in range(len(output['results'])):
+        if 'substance_name' in output['results'][i]['openfda'].keys():
+            name = output['results'][i]['openfda']['substance_name'][0]
+        else:
+            name = "No especificado"
+        solucion += "<ul>{}</ul>".format(name)
+    return solucion
+
+def listDrug(output):
+    solucion = "<p> Lista de medicamento:</p>"
+    for i in range(len(output['results'])):
+        if 'substance_name' in output['results'][i]['openfda'].keys():
+            name = output['results'][i]['openfda']['substance_name'][0]
+        else:
+            name = "No especificado"
+        solucion += '<ul>{}</ul>'.format(name)
+    return solucion
+
+def listCompanies(output):
+    solucion = "<p> Lista de fabricantes:</p>"
+    for i in range(len(output['results'])):
+        if "manufacturer_name" in output['results'][i]['openfda'].keys():
+            fabricante = output['results'][i]['openfda']['manufacturer_name'][0]
+            url_enlace = 'http://127.0.0.1:8000/searchCompany?company={}'.format(fabricante.replace(" ", "+").replace(",",""))
+            print(url_enlace)
+            mostrar = '<a href="{}">{}</a>'.format(url_enlace, fabricante)
+        else:
+            mostrar = "No especificado"
+        solucion += '<ul>{}</ul>'.format(mostrar)
+    return solucion
+
 app = Flask(__name__)
 
-# Info
-web = "api.fda.gov"
-resource = "/drug/label.json"
-headers = {'User-Agent': 'http-client'}
-PORT = 8000
-IP = ""  # Por defecto coge la IP local 127.0.0.1
-num_drug = 100
-#active = "acetylsalicylic"
-#extra =  '?search=active_ingredient:"{}"&limit={}'.format(active, num_drug)
-#url = web + resource + extra
+@app.route('/', methods = ['GET'])
+def getInicio():
+    file_html = "indice.html"
+    with open(file_html, "r") as f:
+        message = f.read()
+    return message
 
-@app.route('/searchDrug')
-def my_route():
-    page = request.args.get('active_ingredient', default = "*", type = str)
-    filter = request.args.get('filter', default = "*", type = str)
+@app.route('/searchDrug', methods=['GET'])
+def getDrug():
+    numdrug = 10
+    ingredient = request.args.get('active_ingredient', default = "*", type = str)
+    ingredient_searh = ingredient.replace(" ","+")
+    limit = request.args.get('limit', default = numdrug, type = int)
+    datos = buscadorApi('?search=active_ingredient:"{}"&limit={}'.format(ingredient_searh,limit), limit)
+    message = searchDrug(datos,ingredient)
+    return message
 
+@app.route('/searchCompany', methods=['GET'])
+def getCompany():
+    numdrug = 10
+    company = request.args.get('company', default = "*", type = str)
+    company_search = company.replace(" ", "+")
+    limit = request.args.get('limit', default=numdrug, type=int)
+    datos = buscadorApi('?search=manufacturer_name:"{}"&limit={}'.format(company_search, limit), limit)
+    message = searchCompany(datos, company)
+    return message
 
-socketserver.TCPServer.allow_reuse_address = True
+@app.route('/listDrugs',methods=['GET'])
+def getListDrug():
+    numdrug = 10
+    limit = request.args.get('limit', default=numdrug, type=int)
+    datos = buscadorApi('?limit={}'.format(limit), limit)
+    message = listDrug(datos)
+    return message
 
+@app.route('/listCompanies',methods=['GET'])
+def getListCompanies():
+    numdrug = 10
+    limit = request.args.get('limit', default=numdrug, type=int)
+    datos = buscadorApi('?limit={}'.format(limit), limit)
+    message = listCompanies(datos)
+    return message
 
-if not 0 < num_drug <= 100:
-    print("Error, el numero de medicamentos debe estar entre 1 y 100")
-    exit(1)
-
-
-class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
-
-    def do_GET(self):
-
-        # Status
-        self.send_response(200)
-
-        # Que contenido estamos pasando
-        self.send_header('Content-type', 'text/html')
-        self.end_headers()
-
-        # Este es el mensaje que enviamos al cliente: un texto y el recurso solicitado
-
-        solicitud = self.path[1:]
-
-        if self.path == "/":
-            file_html = "indice.html"
-            with open(file_html, "r") as f:
-                message = f.read()
-        elif self.path [:len("/searchDrug?active_ingredient=")] == "/searchDrug?active_ingredient=":
-            print("Estoy aquí")
-            active = "{}".format(self.path[30:])
-            print(active)
-            print(self.path)
-            extra = '?search=active_ingredient:"{}"&limit={}'.format(active, num_drug)
-            conexion = http.client.HTTPSConnection(web)
-            try:
-                conexion.request("GET", resource + extra, None, headers)
-            except http.client.socket.gaierror as error:
-                print(error)
-                print("Error de conexión, la URL {} no existe".format(web))
-                exit(1)
-            response = conexion.getresponse()
-            if response.status != 200:
-                print("Error de conexión, el recurso solicitado {} no existe".format(resource))
-                exit(1)
-
-
-        elif self.path [:len("/searchCompany?company=")] == "/searchCompany?company=":
-            print("Estoy aquí")
-            company = "{}".format(self.path[30:])
-            print(active)
-            print(self.path)
-            extra = '?search=manufacter_name:"{}"&limit={}'.format(company, num_drug)
-            conexion = http.client.HTTPSConnection(web)
-            try:
-                conexion.request("GET", resource + extra, None, headers)
-            except http.client.socket.gaierror as error:
-                print(error)
-                print("Error de conexión, la URL {} no existe".format(web))
-                exit(1)
-            response = conexion.getresponse()
-            if response.status != 200:
-                print("Error de conexión, el recurso solicitado {} no existe".format(resource))
-                exit(1)
-
-            data = response.read().decode("utf-8")
-            conexion.close()
-            print(web + resource + extra)
-
-            output = json.loads(data)
-            #message = CrearPaginasHtml(extra).ShowHtml(data, 10)
-
-            message = """<!doctype html>
-                           <html>
-                             <body style='background-color:#545454'>
-                               <font color="white">
-                               <h1>LISTA DE MEDICAMENTOS</h1>
-                               <p>Medicamentos de la compañía {}:</p>""".format(company)
-
-            for i in range(len(output['results'])):
-                if "generic_name" in output['results'][i]['openfda'].keys():
-                    medicamento = output['results'][i]['openfda']['generic_name'][0]
-
-                else:
-                    medicamento = "No especificado"
-                message += "<ul>{}</ul>".format(medicamento)
-
-            message += """</font>
-                    </body></html>"""
-
-
-        # Enviar el mensaaje completo
-        self.wfile.write(bytes(message, "utf8"))
-        print("File served!")
-        return
-
-# ----------------------------------
-# El servidor comienza a aqui
-# ----------------------------------
-
-# Establecemos como manejador nuestra propia clase
-Handler = testHTTPRequestHandler
-
-# Configurar el socket del servidor, para esperar conexiones de clientes
-httpd = socketserver.TCPServer(("", PORT), Handler)
-print("Serving at port", PORT)
-
-# Entrar en el bucle principal
-# Las peticiones se atienden desde nuestro manejador
-# Cada vez que se ocurra un "GET" se invoca al metodo do_GET de nuestro manejador
-try:
-    httpd.serve_forever()
-except KeyboardInterrupt:
-    print("")
-    print("Interrumpido por el usuario")
-
-print("")
-print("Servidor parado")
-httpd.server_close()
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8000)
