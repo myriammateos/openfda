@@ -86,19 +86,6 @@ def listCompanies(output):
         print(solucion)
     return solucion
 
-def htmlizador(cuerpo):
-    encabezado = "<!DOCTYPE html>"
-    encabezado += '<html lang = "en">'
-    encabezado += "<head>"
-    encabezado += '<meta charset = "UTF-8">'
-    encabezado += "<title>{}</title>".format("Poner título")
-    encabezado += '<link rel = "stylesheet" type= "text/css" href="static/plantilla.css"'
-    encabezado += "</head>"
-    encabezado += "<body>"
-    final = "</body></html>"
-    return encabezado + cuerpo + final
-
-
 app = Flask(__name__)
 
 @app.route('/', methods = ['GET'])
