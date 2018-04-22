@@ -2,7 +2,7 @@ from flask import Flask
 from flask import request
 import http.client
 import json
-from flask import render_template
+
 
 def buscadorApi(url, limit):
     web = "api.fda.gov"
@@ -35,8 +35,7 @@ def buscadorApi(url, limit):
     return output
 
 def searchDrug(output, medicament):
-    solucion = []
-
+    solucion = "<p> Medicamentos que contienen {}: </p>".format(medicament)
     for i in range(len(output['results'])):
         if 'substance_name' in output['results'][i]['openfda'].keys():
             name = output['results'][i]['openfda']['substance_name'][0]
@@ -46,44 +45,44 @@ def searchDrug(output, medicament):
             fabricante = output['results'][i]['openfda']['manufacturer_name'][0]
             url_enlace = 'http://127.0.0.1:8000/searchCompany?company={}'.format(fabricante.replace(" ", "+").replace(",", ""))
             print(url_enlace)
+            mostrar = '<a href="{}">{}</a>'.format(url_enlace, fabricante)
         else:
-            url_enlace = "No especificado"
-            fabricante = "No especificado"
-        parejas = [name, url_enlace, fabricante]
-        solucion.append(parejas)
+            mostrar = "No especificado"
+        solucion += "<ul>Medicamento: {}</ul>".format(name)
+        solucion += "<ul>Fabricante: {}</ul>".format(mostrar)
     return solucion
 
 def searchCompany(output, company):
-    solucion = []
+    solucion = "<p> Medicamentos de la empresa {}: </p>".format(company)
     for i in range(len(output['results'])):
         if 'substance_name' in output['results'][i]['openfda'].keys():
             name = output['results'][i]['openfda']['substance_name'][0]
         else:
             name = "No especificado"
-        solucion.append(name)
+        solucion += "<ul>{}</ul>".format(name)
     return solucion
 
 def listDrug(output):
-    solucion = []
+    solucion = "<p> Lista de medicamento:</p>"
     for i in range(len(output['results'])):
         if 'substance_name' in output['results'][i]['openfda'].keys():
             name = output['results'][i]['openfda']['substance_name'][0]
         else:
             name = "No especificado"
-        solucion.append(name)
+        solucion += '<ul>{}</ul>'.format(name)
     return solucion
 
 def listCompanies(output):
-    solucion = []
+    solucion = "<p> Lista de fabricantes:</p>"
     for i in range(len(output['results'])):
         if "manufacturer_name" in output['results'][i]['openfda'].keys():
             fabricante = output['results'][i]['openfda']['manufacturer_name'][0]
             url_enlace = 'http://127.0.0.1:8000/searchCompany?company={}'.format(fabricante.replace(" ", "+").replace(",",""))
+            print(url_enlace)
+            mostrar = '<a href="{}">{}</a>'.format(url_enlace, fabricante)
         else:
-            url_enlace = "No especificado"
-        parejas = [fabricante, url_enlace]
-        solucion.append(parejas)
-        print(solucion)
+            mostrar = "No especificado"
+        solucion += '<ul>{}</ul>'.format(mostrar)
     return solucion
 
 def htmlizador(cuerpo):
@@ -103,7 +102,10 @@ app = Flask(__name__)
 
 @app.route('/', methods = ['GET'])
 def getInicio():
-    return render_template("inicio.html")
+    file_html = "indice.html"
+    with open(file_html, "r") as f:
+        message = f.read()
+    return message
 
 @app.route('/searchDrug', methods=['GET'])
 def getDrug():
@@ -113,17 +115,17 @@ def getDrug():
     limit = request.args.get('limit', default = numdrug, type = int)
     datos = buscadorApi('?search=active_ingredient:"{}"&limit={}'.format(ingredient_searh,limit), limit)
     message = searchDrug(datos,ingredient)
-    return render_template("search_drug.html", content = message, active = ingredient)
+    return htmlizador(message)
 
 @app.route('/searchCompany', methods=['GET'])
 def getCompany():
     numdrug = 10
-    empresa = request.args.get('company', default = "*", type = str)
-    company_search = empresa.replace(" ", "+")
+    company = request.args.get('company', default = "*", type = str)
+    company_search = company.replace(" ", "+")
     limit = request.args.get('limit', default=numdrug, type=int)
     datos = buscadorApi('?search=manufacturer_name:"{}"&limit={}'.format(company_search, limit), limit)
-    message = searchCompany(datos, empresa)
-    return render_template("search_company.html", content = message, company = empresa)
+    message = searchCompany(datos, company)
+    return htmlizador(message)
 
 @app.route('/listDrugs',methods=['GET'])
 def getListDrug():
@@ -131,7 +133,7 @@ def getListDrug():
     limit = request.args.get('limit', default=numdrug, type=int)
     datos = buscadorApi('?limit={}'.format(limit), limit)
     message = listDrug(datos)
-    return render_template("list_drug.html", content = message)
+    return htmlizador(message)
 
 @app.route('/listCompanies',methods=['GET'])
 def getListCompanies():
@@ -139,7 +141,7 @@ def getListCompanies():
     limit = request.args.get('limit', default=numdrug, type=int)
     datos = buscadorApi('?limit={}'.format(limit), limit)
     message = listCompanies(datos)
-    return render_template("list_companies.html", content = message)
+    return htmlizador(message)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000)
