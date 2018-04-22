@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>Medicamentos con el principio activo {{ active }}</h1>
+   <ul>
+   {% for entry in content %}
+       {% if entry[2] == "No especificado" %}
+       <li>Medicamento:{{ entry [0]}} Fabricante: No especificado
+       {% else %}
+       <li>Medicamento:{{ entry [0]}} Fabricante: <a href="{{ entry[1] }}">{{ entry[2] }}</a>
+       {% endif %}
+   {% endfor %}
+   </ul>
+{% endblock %}

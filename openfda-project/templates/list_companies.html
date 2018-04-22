@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>Lista de empresas</h1>
+   <ul>
+   {% for entry in content %}
+       <li><a href="{{ entry[1] }}">{{ entry[0] }}</a>
+   {% endfor %}
+   </ul>
+{% endblock %}

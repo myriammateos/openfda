@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>LISTA</h2>
+    <p>Aqui tienes una lista con los archivos del directorio:</p>
+         <form action="/searchDrug">
+             Active ingredient:
+             <input type="text" name="active_ingredient">
+             Limite
+             <input type="text" name="limit">
+             <input type="submit" value="Submit">
+        </form>
+        <form action="/searchCompany">
+             <p></p>
+             Company:
+             <input type="text" name="company">
+             Limite
+             <input type="text" name="limit">
+             <input type="submit" value="Submit">
+        </form>
+        <form action="/listDrugs">
+             <p></p>
+             Limite
+             <input type="text" name="limit">
+             <input type="submit" value="List Drugs">
+        </form>
+        <form action="/listCompanies">
+             <p></p>
+             Limite
+             <input type="text" name="limit">
+             <input type="submit" value="List Companies">
+        </form>
+{% endblock %}
