@@ -12,10 +12,12 @@ def buscadorApi(url, limit):
     num_drug = limit
     print(url)
     print(web + resource + url)
+    output = "Correcto"
 
     if not 0 < num_drug <= 100:
         print("Error, el numero de medicamentos debe estar entre 1 y 100")
-        exit(1)
+        code = "Error"
+        return code
 
     conexion = http.client.HTTPSConnection(web)
     try:
@@ -23,11 +25,14 @@ def buscadorApi(url, limit):
     except http.client.socket.gaierror as error:
         print(error)
         print("Error de conexión, la URL {} no existe".format(web))
-        exit(1)
+        code = "Error"
+        return code
+
     response = conexion.getresponse()
     if response.status != 200:
         print("Error de conexión, el recurso solicitado {} no existe".format(resource+url))
-        exit(1)
+        code = "Error"
+        return code
 
     data = response.read().decode("utf-8")
     conexion.close()
@@ -100,6 +105,8 @@ def getDrug():
     ingredient_searh = ingredient.replace(" ","+")
     limit = request.args.get('limit', default = numdrug, type = int)
     datos = buscadorApi('?search=active_ingredient:"{}"&limit={}'.format(ingredient_searh,limit), limit)
+    if datos == "Error":
+        return render_template("error.html")
     message = searchDrug(datos)
     return render_template("search_drug.html", content = message, active = ingredient)
 
@@ -110,6 +117,8 @@ def getCompany():
     company_search = empresa.replace(" ", "+")
     limit = request.args.get('limit', default=numdrug, type=int)
     datos = buscadorApi('?search=manufacturer_name:"{}"&limit={}'.format(company_search, limit), limit)
+    if datos == "Error":
+        return render_template("error.html")
     message = searchCompany(datos)
     return render_template("search_company.html", content = message, company = empresa)
 
@@ -118,6 +127,8 @@ def getListDrug():
     numdrug = 10
     limit = request.args.get('limit', default=numdrug, type=int)
     datos = buscadorApi('?limit={}'.format(limit), limit)
+    if datos == "Error":
+        return render_template("error.html")
     message = listDrug(datos)
     return render_template("list_drug.html", content = message)
 
@@ -126,6 +137,8 @@ def getListCompanies():
     numdrug = 10
     limit = request.args.get('limit', default=numdrug, type=int)
     datos = buscadorApi('?limit={}'.format(limit), limit)
+    if datos == "Error":
+        return render_template("error.html")
     message = listCompanies(datos)
     return render_template("list_companies.html", content = message)
 
