@@ -10,8 +10,6 @@ def buscadorApi(url, limit):
     headers = {'User-Agent': 'http-client'}
     extra = url
     num_drug = limit
-    print(url)
-    print(web + resource + url)
     output = "Correcto"
 
     if not 0 < num_drug <= 100:
@@ -50,7 +48,6 @@ def searchDrug(output):
         if "manufacturer_name" in output['results'][i]['openfda'].keys():
             fabricante = output['results'][i]['openfda']['manufacturer_name'][0]
             url_enlace = 'http://127.0.0.1:8000/searchCompany?company={}'.format(fabricante.replace(" ", "+").replace(",", ""))
-            print(url_enlace)
         else:
             url_enlace = "No especificado"
             fabricante = "No especificado"
@@ -89,7 +86,6 @@ def listCompanies(output):
             fabricante = "No especificado"
         parejas = [fabricante, url_enlace]
         solucion.append(parejas)
-        print(solucion)
     return solucion
 
 app = Flask(__name__)
