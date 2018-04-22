@@ -17,7 +17,34 @@
   </div>
   <div class="row">
     <div class="column side">
-      Column
+      <h1>INICIO</h2>
+         <form action="/searchDrug">
+             Active ingredient: <br>
+             <input type="text" name="active_ingredient" style="width:180px; height:30px; background-color:#D6DBDF; font-size:10pt; border-radius: 10px"> <br>
+             <br>
+             <input type=image src="static/search.png" width="150" >
+        </form>
+        <form action="/searchCompany">
+             <p></p>
+             Company:<br>
+             <input type="text" name="company" style="width:180px; height:30px; background-color:#D6DBDF; font-size:10pt; border-radius: 10px"><br>
+             <br>
+             <input type=image src="static/search.png" width="150" >
+        </form>
+        <form action="/listDrugs">
+             <p></p>
+             List Drugs (limit 10)<br>
+             <input type="text" name="limit" style="width:180px; height:30px; background-color:#D6DBDF; font-size:10pt; border-radius: 10px">
+             <br><br>
+             <input type=image src="static/search.png" width="150" >
+        </form>
+        <form action="/listCompanies">
+             <p></p>
+             List Companies (limit 10)<br>
+             <input type="text" name="limit" style="width:180px; height:30px; background-color:#D6DBDF; font-size:10pt; border-radius: 10px">
+             <br><br>
+             <input type=image src="static/search.png" width="150" >
+        </form>
     </div>
     <!--  Cuerpo de la página -->
     <div class="column middle">
@@ -33,7 +60,6 @@
 </div>
 </body>
 </html>
-
 
 
 
