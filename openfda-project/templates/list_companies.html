@@ -3,7 +3,11 @@
 <h1>Lista de empresas</h1>
    <ul>
    {% for entry in content %}
+       {% if entry[0] == "No especificado" %}
+       <li>No especificado
+       {% else %}
        <li><a href="{{ entry[1] }}">{{ entry[0] }}</a>
+       {% endif %}
    {% endfor %}
    </ul>
 {% endblock %}
