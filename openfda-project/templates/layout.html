@@ -1,9 +1,38 @@
-<!doctype html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
 <title>Mi pagina</title>
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='plantilla.css') }}">
-<div class=page>
-  <h1>Test</h1>
+</head>
 
+<body>
+<div class=content>
+  <div class="header">
+    <h2>Imagen</h2>
+  </div>
+  <div class="menu">
+    <div class="menu_item">
+      <a href = "" > <p>INICIO</p> </a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="column side">
+      Column
+    </div>
+    <!--  Cuerpo de la página -->
+    <div class="column middle">
+      {% block body %}{% endblock %}
+    </div>
+  </div>
 
-  {% block body %}{% endblock %}
+<div class="footer">
+  <p>© Myriam Mateos</p>
 </div>
+
+</div>
+</body>
+</html>
+
+
+
+

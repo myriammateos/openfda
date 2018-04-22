@@ -34,7 +34,7 @@ def buscadorApi(url, limit):
     output = json.loads(data)
     return output
 
-def searchDrug(output, medicament):
+def searchDrug(output):
     solucion = []
 
     for i in range(len(output['results'])):
@@ -53,7 +53,7 @@ def searchDrug(output, medicament):
         solucion.append(parejas)
     return solucion
 
-def searchCompany(output, company):
+def searchCompany(output):
     solucion = []
     for i in range(len(output['results'])):
         if 'substance_name' in output['results'][i]['openfda'].keys():
@@ -81,6 +81,7 @@ def listCompanies(output):
             url_enlace = 'http://127.0.0.1:8000/searchCompany?company={}'.format(fabricante.replace(" ", "+").replace(",",""))
         else:
             url_enlace = "No especificado"
+            fabricante = "No especificado"
         parejas = [fabricante, url_enlace]
         solucion.append(parejas)
         print(solucion)
@@ -99,7 +100,7 @@ def getDrug():
     ingredient_searh = ingredient.replace(" ","+")
     limit = request.args.get('limit', default = numdrug, type = int)
     datos = buscadorApi('?search=active_ingredient:"{}"&limit={}'.format(ingredient_searh,limit), limit)
-    message = searchDrug(datos,ingredient)
+    message = searchDrug(datos)
     return render_template("search_drug.html", content = message, active = ingredient)
 
 @app.route('/searchCompany', methods=['GET'])
@@ -109,7 +110,7 @@ def getCompany():
     company_search = empresa.replace(" ", "+")
     limit = request.args.get('limit', default=numdrug, type=int)
     datos = buscadorApi('?search=manufacturer_name:"{}"&limit={}'.format(company_search, limit), limit)
-    message = searchCompany(datos, empresa)
+    message = searchCompany(datos)
     return render_template("search_company.html", content = message, company = empresa)
 
 @app.route('/listDrugs',methods=['GET'])
