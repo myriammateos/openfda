@@ -85,6 +85,20 @@ def listCompanies(output):
         solucion += '<ul>{}</ul>'.format(mostrar)
     return solucion
 
+def htmlizador(cuerpo):
+    encabezado = "<!DOCTYPE html>"
+    encabezado += '<html lang = "en">'
+    encabezado += "<head>"
+    encabezado += '<meta charset = "UTF-8">'
+    encabezado += "<title>{}</title>".format("Poner título")
+    encabezado += '<link rel = "stylesheet" type= "text/css" href="plantilla.css"'
+    encabezado += "</head>"
+    encabezado += "<body>"
+
+    final = "</body></html>"
+    return encabezado + cuerpo + final
+
+
 app = Flask(__name__)
 
 @app.route('/', methods = ['GET'])
@@ -102,7 +116,7 @@ def getDrug():
     limit = request.args.get('limit', default = numdrug, type = int)
     datos = buscadorApi('?search=active_ingredient:"{}"&limit={}'.format(ingredient_searh,limit), limit)
     message = searchDrug(datos,ingredient)
-    return message
+    return htmlizador(message)
 
 @app.route('/searchCompany', methods=['GET'])
 def getCompany():
@@ -112,7 +126,7 @@ def getCompany():
     limit = request.args.get('limit', default=numdrug, type=int)
     datos = buscadorApi('?search=manufacturer_name:"{}"&limit={}'.format(company_search, limit), limit)
     message = searchCompany(datos, company)
-    return message
+    return htmlizador(message)
 
 @app.route('/listDrugs',methods=['GET'])
 def getListDrug():
@@ -120,7 +134,7 @@ def getListDrug():
     limit = request.args.get('limit', default=numdrug, type=int)
     datos = buscadorApi('?limit={}'.format(limit), limit)
     message = listDrug(datos)
-    return message
+    return htmlizador(message)
 
 @app.route('/listCompanies',methods=['GET'])
 def getListCompanies():
@@ -128,7 +142,7 @@ def getListCompanies():
     limit = request.args.get('limit', default=numdrug, type=int)
     datos = buscadorApi('?limit={}'.format(limit), limit)
     message = listCompanies(datos)
-    return message
+    return htmlizador(message)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000)
