@@ -3,7 +3,7 @@ from flask import Flask
 from flask import request
 import http.client
 import json
-from flask import render_template
+from flask import render_template, url_for, redirect
 
 def buscadorApi(url, limit):
     web = "api.fda.gov"
@@ -163,6 +163,21 @@ def getListWarnings():
         return render_template("error.html")
     message = listWarnings(datos)
     return render_template("list_warnings.html", content = message)
+
+@app.route('/secret',methods=['GET'])
+def secret():
+    app.logger.error('Page not found: %s', (request.path))
+    return render_template('error_401.html'), 401
+
+@app.route('/redirect',methods=['GET'])
+def redirigir():
+    app.logger.error('Page not found: %s', (request.path))
+    return redirect(url_for('getInicio'))
+
+@app.errorhandler(404)
+def page_not_found(e):
+    app.logger.error('Page not found: %s', (request.path))
+    return render_template('error_404.html'), 404
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000)
