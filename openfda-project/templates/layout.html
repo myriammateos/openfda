@@ -17,10 +17,11 @@
   </div>
   <div class="row">
     <div class="column side">
-      <h1>BUSCADOR</h2>
+      <h1>BUSCADOR</h1>
          <form action="/searchDrug">
              Active ingredient: <br>
              <input type="text" name="active_ingredient" placeholder=" Introducir principo activo" style="width:250px; height:30px; background-color:#D6DBDF; font-size:10pt; border-radius: 10px"> <br>
+             <input type="text" name="limit" placeholder=" Limite (por defecto 10, max 100)" style="width:250px; height:30px; background-color:#D6DBDF; font-size:10pt; border-radius: 10px">
              <br>
              <input type=image src="static/search.png" width="150" >
         </form>
@@ -28,6 +29,7 @@
              <p></p>
              Company:<br>
              <input type="text" name="company" placeholder=" Introducir empresa" style="width:250px; height:30px; background-color:#D6DBDF; font-size:10pt; border-radius: 10px"><br>
+             <input type="text" name="limit" placeholder=" Limite (por defecto 10, max 100)" style="width:250px; height:30px; background-color:#D6DBDF; font-size:10pt; border-radius: 10px">
              <br>
              <input type=image src="static/search.png" width="150" >
         </form>
@@ -41,6 +43,13 @@
         <form action="/listCompanies">
              <p></p>
              List Companies (limit 10)<br>
+             <input type="text" name="limit" placeholder=" Limite de búsqueda (max = 100)" style="width:250px; height:30px; background-color:#D6DBDF; font-size:10pt; border-radius: 10px">
+             <br><br>
+             <input type=image src="static/search.png" width="150" >
+        </form>
+        <form action="/listWarnings">
+             <p></p>
+             List Warnings (limit 10)<br>
              <input type="text" name="limit" placeholder=" Limite de búsqueda (max = 100)" style="width:250px; height:30px; background-color:#D6DBDF; font-size:10pt; border-radius: 10px">
              <br><br>
              <input type=image src="static/search.png" width="150" >

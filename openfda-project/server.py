@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from flask import Flask
 from flask import request
 import http.client
@@ -88,6 +89,21 @@ def listCompanies(output):
         solucion.append(parejas)
     return solucion
 
+def listWarnings(output):
+    solucion = []
+    for i in range(len(output['results'])):
+        if 'substance_name' in output['results'][i]['openfda'].keys():
+            name = output['results'][i]['openfda']['substance_name'][0]
+        else:
+            name = "No especificado"
+        if "warnings" in output['results'][i].keys():
+            warning = output['results'][i]['warnings'][0]
+        else:
+            warning = "No especificado"
+        parejas = [name, warning]
+        solucion.append(parejas)
+    return solucion
+
 app = Flask(__name__)
 
 @app.route('/', methods = ['GET'])
@@ -137,6 +153,16 @@ def getListCompanies():
         return render_template("error.html")
     message = listCompanies(datos)
     return render_template("list_companies.html", content = message)
+
+@app.route('/listWarnings',methods=['GET'])
+def getListWarnings():
+    numdrug = 10
+    limit = request.args.get('limit', default=numdrug, type=int)
+    datos = buscadorApi('?limit={}'.format(limit), limit)
+    if datos == "Error":
+        return render_template("error.html")
+    message = listWarnings(datos)
+    return render_template("list_warnings.html", content = message)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000)

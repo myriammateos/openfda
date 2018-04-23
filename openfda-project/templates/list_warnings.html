@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>List warnings</h1>
+   <ul>
+   {% for entry in content %}
+       <li>Medicamento:{{ entry [0]}} Warnings: {{ entry[1] }}
+   {% endfor %}
+   </ul>
+{% endblock %}
